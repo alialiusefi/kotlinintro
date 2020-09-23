@@ -2,10 +2,11 @@ package com.demo.kotlinintro
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.ApplicationContext
 
 @SpringBootApplication
-class KotlinIntroApplication
+class KotlinintroApplication
 
 fun main(args: Array<String>) {
-	runApplication<KotlinIntroApplication>(*args)
+	runApplication<KotlinintroApplication>(*args)
 }

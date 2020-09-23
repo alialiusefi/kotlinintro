@@ -1,6 +1,6 @@
 package com.demo.kotlinintro.controller
 
-import com.demo.kotlinintro.dto.HelloWorldDTO
+import com.demo.kotlinintro.entity.HelloWorld
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,8 +13,6 @@ class HelloWorldController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun helloWorld(): HelloWorldDTO {
-        return HelloWorldDTO()
-    }
+    fun helloWorld(): HelloWorld = HelloWorld()
 
 }
