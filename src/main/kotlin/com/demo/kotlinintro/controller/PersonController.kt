@@ -20,10 +20,11 @@ class PersonController(val personService: PersonService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun addPerson(person: PersonDTO): PersonDTO = personService.addPerson(person).convertToPersonDTO()
+    fun addPerson(@RequestBody person: PersonDTO): PersonDTO = personService.addPerson(person).convertToPersonDTO()
 
     fun Person.convertToPersonDTO(): PersonDTO {
-        return PersonDTO(id = this.id,
+        return PersonDTO(
+                id = this.id,
                 age = this.age,
                 gender = this.gender,
                 name = this.name,
