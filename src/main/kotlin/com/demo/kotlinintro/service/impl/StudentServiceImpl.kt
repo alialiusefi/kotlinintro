@@ -34,8 +34,7 @@ class StudentServiceImpl(val studentRepository: StudentRepository) : StudentServ
     override fun deleteStudent(id: String) = studentRepository.delete(getStudent(id))
 
     fun StudentDTO.toStudent(): Student =
-            Student(id = requireNotNull(this.id) { "Student id cannot be null" },
-                    email = this.email,
+            Student(email = this.email,
                     yearEnrolled = this.yearEnrolled,
                     dateOfBirth = this.dateOfBirth,
                     active = this.active,
