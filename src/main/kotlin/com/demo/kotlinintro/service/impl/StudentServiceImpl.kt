@@ -2,22 +2,21 @@ package com.demo.kotlinintro.service.impl
 
 import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.entity.Student
-import com.demo.kotlinintro.exception.ResourseNotFoundException
+import com.demo.kotlinintro.exception.ResourceNotFoundException
 import com.demo.kotlinintro.repository.StudentRepository
 import com.demo.kotlinintro.service.StudentService
 import org.springframework.stereotype.Service
 
 @Service
 class StudentServiceImpl(val studentRepository: StudentRepository) : StudentService {
+
     override fun getStudent(id: String): Student = studentRepository.findById(id)
-            .orElseThrow { ResourseNotFoundException("Can't find student with id: $id") }
+            .orElseThrow { ResourceNotFoundException("Can't find student with id: $id") }
 
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
-
     override fun addStudent(student: StudentDTO): Student = studentRepository.save(student.toStudent())
-
 
     override fun editStudent(id: String, givenStudent: StudentDTO): Student {
         val oldStudent = getStudent(id)
