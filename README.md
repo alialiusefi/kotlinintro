@@ -3,8 +3,7 @@
     * Kotlin
     * Maven
     * Java
-    * Spring Boot Starters (Web,Validation,MongoDB,Actuator)
-    * MongoDB
+    * Spring Boot Starters (Web,Validation,MongoDB,Actuator,Test)
     * MockK
     * Swagger
     
