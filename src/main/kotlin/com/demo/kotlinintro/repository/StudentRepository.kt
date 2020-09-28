@@ -1,8 +1,15 @@
 package com.demo.kotlinintro.repository
 
 import com.demo.kotlinintro.entity.Student
-import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.stereotype.Repository
+import com.mongodb.client.result.DeleteResult
 
-@Repository
-interface StudentRepository : MongoRepository<Student, String>
+interface StudentRepository {
+
+    fun findAll() : List<Student>
+
+    fun findById(id : String) : Student?
+
+    fun save(student : Student) : Student
+
+    fun delete(student : Student) : DeleteResult
+}

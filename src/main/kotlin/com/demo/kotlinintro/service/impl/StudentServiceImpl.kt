@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class StudentServiceImpl(val studentRepository: StudentRepository) : StudentService {
 
-    override fun getStudent(id: String): Student = studentRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Can't find student with id: $id") }
-
+    override fun getStudent(id: String): Student = studentRepository.findById(id) ?: throw ResourceNotFoundException("Can't find resource with id :" +
+            " $id")
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
@@ -30,7 +29,7 @@ class StudentServiceImpl(val studentRepository: StudentRepository) : StudentServ
         return studentRepository.save(newStudent)
     }
 
-    override fun deleteStudent(id: String) = studentRepository.delete(getStudent(id))
+    override fun deleteStudent(id: String) { studentRepository.delete(getStudent(id)) }
 
     fun StudentDTO.toStudent(): Student =
             Student(email = this.email,

@@ -12,7 +12,7 @@ import javax.validation.Validator
 import javax.validation.constraints.Pattern
 
 const val UUID_REGEX: String = "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
-const val INVALID_UUID_MSG: String = "Invalid UUID"
+const val INVALID_UUID_MSG: String = "Invalid UUID format"
 
 @RestController
 @RequestMapping("/students")
