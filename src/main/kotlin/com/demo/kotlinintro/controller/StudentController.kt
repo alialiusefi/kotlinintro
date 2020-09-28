@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.stream.Collectors
 import javax.validation.Valid
-import javax.validation.Validator
 import javax.validation.constraints.Pattern
 
 const val UUID_REGEX: String = "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
@@ -17,7 +16,7 @@ const val INVALID_UUID_MSG: String = "Invalid UUID format"
 @RestController
 @RequestMapping("/students")
 @Validated
-class StudentController(val studentService: StudentService, val validator: Validator) {
+class StudentController(val studentService: StudentService) {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
