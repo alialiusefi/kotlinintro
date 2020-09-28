@@ -4,12 +4,13 @@ import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.exception.ResourceNotFoundException
 import com.demo.kotlinintro.repository.StudentRepository
+import com.mongodb.client.result.DeleteResult
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import junit.framework.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,7 +26,7 @@ class StudentServiceImplTest {
     lateinit var studentService: StudentServiceImpl
 
     @Test
-    fun getStudent() {
+    fun shouldReturnStudent() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         val expected = Student(id = uuid,
@@ -40,19 +41,21 @@ class StudentServiceImplTest {
         val actual: Student = studentService.getStudent(uuid)
 
         assertEquals(expected, actual)
+        verify { studentRepository.findById(uuid) }
     }
 
     @Test
-    fun getStudent_ExceptionNotFound() {
+    fun shouldThrowResourceNotFoundExceptionWhenStudentDoesntExist() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         every { studentRepository.findById(uuid) } returns null
 
         assertThrows<ResourceNotFoundException> { studentService.getStudent(uuid) }
+        verify(exactly = 1) { studentRepository.findById(uuid) }
     }
 
     @Test
-    fun getAllStudents() {
+    fun shouldReturnAllStudents() {
         val expectedList = listOf(
                 Student(id = "51876e46-8c15-47be-93b8-d3954a849ad7",
                         fullName = "Ali Al-Iusefi",
@@ -73,10 +76,11 @@ class StudentServiceImplTest {
         val actualList: List<Student> = studentService.getAllStudents()
 
         assertEquals(expectedList, actualList)
+        verify { studentRepository.findAll() }
     }
 
     @Test
-    fun addStudent() {
+    fun shouldAddStudentAndReturnNewStudent() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         val studentDTO = StudentDTO(id = null,
@@ -98,15 +102,33 @@ class StudentServiceImplTest {
         val actual: Student = studentService.addStudent(studentDTO)
 
         assertEquals(expected, actual)
+        verify { studentRepository.save(any()) }
     }
 
     @Test
-    fun editStudent() {
+    fun shouldEditStudentAndReturnUpdatedStudent() {
+        val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
+        val expected = Student(id = uuid,
+                fullName = "Ali Al-Iusefi",
+                yearEnrolled = 2017,
+                dateOfBirth = LocalDate.of(2000, 1, 1),
+                email = "email@example.com",
+                active = true)
+
+        val editedStudent = expected.copy()
+
+        every { studentRepository.findById(uuid) } returns expected
+        every { studentRepository.save(editedStudent) } returns expected
+
+        val actual = studentRepository.save(editedStudent)
+
+        assertEquals(expected, actual)
+        verify { studentRepository.save(any()) }
     }
 
     @Test
-    fun editStudent_ExceptionNotFound() {
+    fun shouldThrowResourceNotFoundExceptionStudentDoesNotExist() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         val studentDTO = StudentDTO(id = null,
@@ -121,11 +143,11 @@ class StudentServiceImplTest {
         assertThrows<ResourceNotFoundException> { studentService.editStudent(uuid, studentDTO) }
 
         verify { studentRepository.findById(uuid) }
-        verify(atMost = 0) { studentRepository.save(any()) }
+        verify(exactly = 0) { studentRepository.save(any()) }
     }
 
     @Test
-    fun deleteStudent() {
+    fun shouldDeleteStudent() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         val student = Student(id = uuid,
@@ -137,14 +159,17 @@ class StudentServiceImplTest {
 
         every { studentRepository.findById(uuid) } returns student
 
+        val acknowledgedDeleteResult = DeleteResult.acknowledged(1L)
+        every { studentRepository.delete(student) } returns acknowledgedDeleteResult
+
         studentService.deleteStudent(uuid)
 
-        verify { studentRepository.findById(uuid) }
+        verify { studentService.getStudent(uuid) }
         verify { studentRepository.delete(student) }
     }
 
     @Test
-    fun deleteStudent_ExceptionNotFound() {
+    fun shouldThrowResourceNotFoundExceptionWhenStudentDoesNotExist() {
         val uuid = "51876e46-8c15-47be-93b8-d3954a849ad7"
 
         every { studentRepository.findById(uuid) } returns null
@@ -152,6 +177,6 @@ class StudentServiceImplTest {
         assertThrows<ResourceNotFoundException> { studentService.deleteStudent(uuid) }
 
         verify { studentRepository.findById(uuid) }
-        verify(atMost = 0) { studentRepository.delete(any()) }
+        verify(exactly = 0) { studentRepository.delete(any()) }
     }
 }
