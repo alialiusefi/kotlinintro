@@ -116,12 +116,17 @@ class StudentServiceImplTest {
                 email = "email@example.com",
                 active = true)
 
-        val editedStudent = expected.copy()
+        val editedStudent = StudentDTO(id = uuid,
+                fullName = "Ali Al-Iusefi",
+                yearEnrolled = 2017,
+                dateOfBirth = LocalDate.of(2000, 1, 1),
+                email = "email@example.com",
+                active = true)
 
         every { studentRepository.findById(uuid) } returns expected
-        every { studentRepository.save(editedStudent) } returns expected
+        every { studentRepository.save(any()) } returns expected
 
-        val actual = studentRepository.save(editedStudent)
+        val actual = studentService.editStudent(uuid, editedStudent)
 
         assertEquals(expected, actual)
         verify { studentRepository.save(any()) }
