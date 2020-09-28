@@ -1,5 +1,6 @@
-package com.demo.kotlinintro.exception
+package com.demo.kotlinintro.handler
 
+import com.demo.kotlinintro.exception.ResourceNotFoundException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

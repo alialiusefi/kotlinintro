@@ -15,16 +15,16 @@ class StudentServiceImpl(val studentRepository: StudentRepository) : StudentServ
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
-    override fun addStudent(student: StudentDTO): Student = studentRepository.save(student.toStudent())
+    override fun addStudent(studentDTO: StudentDTO): Student = studentRepository.save(studentDTO.toStudent())
 
-    override fun editStudent(id: String, givenStudent: StudentDTO): Student {
+    override fun editStudent(id: String, givenStudentDTO: StudentDTO): Student {
         val oldStudent = getStudent(id)
         val newStudent = oldStudent.copy(
-                fullName = givenStudent.fullName,
-                email = givenStudent.email,
-                yearEnrolled = givenStudent.yearEnrolled,
-                active = givenStudent.active,
-                dateOfBirth = givenStudent.dateOfBirth
+                fullName = givenStudentDTO.fullName,
+                email = givenStudentDTO.email,
+                yearEnrolled = givenStudentDTO.yearEnrolled,
+                active = givenStudentDTO.active,
+                dateOfBirth = givenStudentDTO.dateOfBirth
         )
         return studentRepository.save(newStudent)
     }
