@@ -8,6 +8,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.Past
 import javax.validation.constraints.Positive
 
+// the same about constants
 const val EMAIL_REGEX: String = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
 
 data class StudentDTO(@JsonProperty("id", access = JsonProperty.Access.READ_ONLY) val id: String?,

@@ -12,10 +12,10 @@ class StudentRepositoryImpl(val mongoTemplate: MongoTemplate) : StudentRepositor
 
     override fun findAll(): List<Student> = mongoTemplate.findAll()
 
-    override fun findById(id: String): Student = mongoTemplate.findById(id, Student::class.java) ?: throw ResourceNotFoundException("Can't find the" +
-            " resource with id: $id")
+    override fun findById(id: String): Student? = mongoTemplate.findById(id, Student::class.java) ?: throw ResourceNotFoundException("Can't find the" +
+            " resource with id: $id") // throw an exception is the service layer responsibility
 
-    override fun save(student: Student): Student {
+    override fun save(student: Student): Student { // expression body
         return mongoTemplate.save(student)
     }
 

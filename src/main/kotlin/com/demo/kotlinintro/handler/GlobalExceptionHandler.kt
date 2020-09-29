@@ -15,9 +15,9 @@ import java.util.stream.Collectors
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 
-
+// redundant line
 @ControllerAdvice
-public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
+public class GlobalExceptionHandler : ResponseEntityExceptionHandler() { // public by default
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
         val result = ex.bindingResult
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleJavaxConstraintViolationException(
-            ex: ConstraintViolationException): ResponseEntity<Any?>? {
+            ex: ConstraintViolationException): ResponseEntity<Any?>? {  // Should return specific type, no Any, no null, no lists
         val apiErrors = ex.constraintViolations.stream()
                 .map { obj: ConstraintViolation<*> -> obj.message }
                 .map<Any> { ApiError(it) }
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleMethodArgumentTypeMismatch(
-            ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<Any> {
+            ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<Any> { // why any?
         val error = "${ex.name} should be of type ${ex.requiredType?.name}"
         val apiError = ApiError(error)
         return ResponseEntity(
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ResourceNotFoundException::class)
     fun handleResourceNotFoundException(
-            ex: ResourceNotFoundException, request: WebRequest): ResponseEntity<Any> {
+            ex: ResourceNotFoundException, request: WebRequest): ResponseEntity<Any> { // why any?
         val apiError = ApiError(ex.message)
         return ResponseEntity(
                 apiError, HttpHeaders(), HttpStatus.NOT_FOUND)

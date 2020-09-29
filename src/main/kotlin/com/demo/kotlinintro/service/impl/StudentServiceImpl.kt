@@ -8,13 +8,17 @@ import com.demo.kotlinintro.service.StudentService
 import org.springframework.stereotype.Service
 
 @Service
-class StudentServiceImpl(val studentRepository: StudentRepository) : StudentService {
+class StudentServiceImpl(
+        // private
+        val studentRepository: StudentRepository
+) : StudentService {
 
-    override fun getStudent(id: String): Student = studentRepository.findById(id) ?: throw ResourceNotFoundException("Can't find resource with id :" +
-            " $id")
+    override fun getStudent(id: String): Student = studentRepository.findById(id)
+            ?: throw ResourceNotFoundException("Can't find student with id : $id")
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
+    // parameter should have the same name as in interface
     override fun addStudent(studentDTO: StudentDTO): Student = studentRepository.save(studentDTO.toStudent())
 
     override fun editStudent(id: String, givenStudentDTO: StudentDTO): Student {
@@ -29,12 +33,16 @@ class StudentServiceImpl(val studentRepository: StudentRepository) : StudentServ
         return studentRepository.save(newStudent)
     }
 
-    override fun deleteStudent(id: String) { studentRepository.delete(getStudent(id)) }
+    override fun deleteStudent(id: String) {
+        studentRepository.delete(getStudent(id))
+    }
 
-    fun StudentDTO.toStudent(): Student =
-            Student(email = this.email,
-                    yearEnrolled = this.yearEnrolled,
-                    dateOfBirth = this.dateOfBirth,
-                    active = this.active,
-                    fullName = this.fullName)
+    // should be extracted
+    fun StudentDTO.toStudent(): Student = Student(
+            email = this.email,
+            yearEnrolled = this.yearEnrolled,
+            dateOfBirth = this.dateOfBirth,
+            active = this.active,
+            fullName = this.fullName
+    )
 }
