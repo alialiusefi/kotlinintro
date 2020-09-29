@@ -18,7 +18,6 @@ class StudentServiceImpl(
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
-    // parameter should have the same name as in interface
     override fun addStudent(studentDTO: StudentDTO): Student = studentRepository.save(studentDTO.toStudent())
 
     override fun editStudent(id: String, givenStudentDTO: StudentDTO): Student {

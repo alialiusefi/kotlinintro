@@ -5,12 +5,10 @@ import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.service.StudentService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.* // no asterisk
-import java.util.UUID
-import java.util.stream.Collectors
+import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
-import kotlin.streams.toList
 
 // companion object for constants, and in general, controller is not the best place to store validation constants
 const val UUID_REGEX: String = "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
@@ -43,7 +41,7 @@ class StudentController(
     fun editStudent(@PathVariable @Pattern(regexp = UUID_REGEX, message = INVALID_UUID_MSG) id: String, @Valid @RequestBody studentDTO:
     StudentDTO): StudentDTO =
             studentService.editStudent(id, studentDTO)
-                    .toStudentDTO() // conversion should be applied on one level
+                    .toStudentDTO()
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -59,4 +57,3 @@ class StudentController(
                 dateOfBirth = this.dateOfBirth)
     }
 }
-// empty line at the end of the class everywhere
