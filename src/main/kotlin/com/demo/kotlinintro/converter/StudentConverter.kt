@@ -3,7 +3,6 @@ package com.demo.kotlinintro.converter
 import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.entity.Student
 
-
 fun Student.toStudentDTO(): StudentDTO {
     return StudentDTO(id = this.id,
             fullName = this.fullName,
