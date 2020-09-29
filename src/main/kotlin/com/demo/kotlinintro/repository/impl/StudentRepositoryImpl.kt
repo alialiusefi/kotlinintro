@@ -7,11 +7,11 @@ import org.springframework.data.mongodb.core.findAll
 import org.springframework.stereotype.Repository
 
 @Repository
-class StudentRepositoryImpl(val mongoTemplate: MongoTemplate) : StudentRepository {
+class StudentRepositoryImpl(private val mongoTemplate: MongoTemplate) : StudentRepository {
 
     override fun findAll(): List<Student> = mongoTemplate.findAll()
 
-    override fun findById(id: String): Student? = mongoTemplate.findById(id, Student::class.java)
+    override fun findById(uuid: String): Student? = mongoTemplate.findById(uuid, Student::class.java)
 
     override fun save(student: Student): Student = mongoTemplate.save(student)
 

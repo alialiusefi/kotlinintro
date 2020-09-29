@@ -1,14 +1,12 @@
 package com.demo.kotlinintro.controller
 
+import com.demo.kotlinintro.converter.toStudentDTO
 import com.demo.kotlinintro.dto.StudentDTO
-import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.service.StudentService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import javax.validation.Valid
-import javax.validation.constraints.Pattern
 
 // companion object for constants, and in general, controller is not the best place to store validation constants
 const val UUID_REGEX: String = "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
@@ -17,19 +15,16 @@ const val INVALID_UUID_MSG: String = "Invalid UUID format"
 @RestController
 @RequestMapping("/students")
 @Validated
-class StudentController(
-        // private
-        val studentService: StudentService
-) {
+class StudentController(private val studentService: StudentService) {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllStudents(): List<StudentDTO> = studentService.getAllStudents()
+    fun getAllStudents(): List<StudentDTO> = studentService.getAllStudents().stream()
             .map { it.toStudentDTO() }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getStudent(@PathVariable @Pattern(regexp = UUID_REGEX, message = INVALID_UUID_MSG) id: UUID): // use UUID class
+    fun getStudent(@PathVariable @Valid id: UUID):
             StudentDTO = studentService.getStudent(id).toStudentDTO()
 
     @PostMapping
@@ -38,22 +33,13 @@ class StudentController(
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun editStudent(@PathVariable @Pattern(regexp = UUID_REGEX, message = INVALID_UUID_MSG) id: String, @Valid @RequestBody studentDTO:
+    fun editStudent(@PathVariable @Valid id: UUID, @Valid @RequestBody studentDTO:
     StudentDTO): StudentDTO =
             studentService.editStudent(id, studentDTO)
                     .toStudentDTO()
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteStudent(@PathVariable @Pattern(regexp = UUID_REGEX, message = INVALID_UUID_MSG) id: String) = studentService.deleteStudent(id)
+    fun deleteStudent(@PathVariable @Valid id: UUID) = studentService.deleteStudent(id)
 
-    // should be extracted
-    fun Student.toStudentDTO(): StudentDTO {
-        return StudentDTO(id = this.id,
-                fullName = this.fullName,
-                yearEnrolled = this.yearEnrolled,
-                email = this.email,
-                active = this.active,
-                dateOfBirth = this.dateOfBirth)
-    }
 }

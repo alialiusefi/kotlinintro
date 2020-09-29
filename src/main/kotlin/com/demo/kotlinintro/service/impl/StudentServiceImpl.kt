@@ -8,40 +8,29 @@ import com.demo.kotlinintro.service.StudentService
 import org.springframework.stereotype.Service
 
 @Service
-class StudentServiceImpl(
-        // private
-        val studentRepository: StudentRepository
-) : StudentService {
+class StudentServiceImpl(private val studentRepository: StudentRepository) : StudentService {
 
-    override fun getStudent(id: String): Student = studentRepository.findById(id)
-            ?: throw ResourceNotFoundException("Can't find student with id : $id")
+    override fun getStudent(uuid: UUID): Student = studentRepository.findById(uuid.toString()) ?:
+    throw ResourceNotFoundException("Can't find student with id: $uuid")
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
-    override fun addStudent(studentDTO: StudentDTO): Student = studentRepository.save(studentDTO.toStudent())
+    override fun addStudent(student: StudentDTO): Student = studentRepository.save(student.toStudent())
 
-    override fun editStudent(id: String, givenStudentDTO: StudentDTO): Student {
-        val oldStudent = getStudent(id)
+    override fun editStudent(uuid: UUID, givenStudent: StudentDTO): Student {
+        val oldStudent = getStudent(uuid)
         val newStudent = oldStudent.copy(
-                fullName = givenStudentDTO.fullName,
-                email = givenStudentDTO.email,
-                yearEnrolled = givenStudentDTO.yearEnrolled,
-                active = givenStudentDTO.active,
-                dateOfBirth = givenStudentDTO.dateOfBirth
+                fullName = givenStudent.fullName,
+                email = givenStudent.email,
+                yearEnrolled = givenStudent.yearEnrolled,
+                active = givenStudent.active,
+                dateOfBirth = givenStudent.dateOfBirth
         )
         return studentRepository.save(newStudent)
     }
 
-    override fun deleteStudent(id: String) {
-        studentRepository.delete(getStudent(id))
+    override fun deleteStudent(uuid: UUID) {
+        val student = getStudent(uuid)
+        studentRepository.delete(student)
     }
-
-    // should be extracted
-    fun StudentDTO.toStudent(): Student = Student(
-            email = this.email,
-            yearEnrolled = this.yearEnrolled,
-            dateOfBirth = this.dateOfBirth,
-            active = this.active,
-            fullName = this.fullName
-    )
 }
