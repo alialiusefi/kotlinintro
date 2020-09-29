@@ -7,7 +7,7 @@ interface StudentRepository {
 
     fun findAll() : List<Student>
 
-    fun findById(id : String) : Student?
+    fun findById(uuid : String) : Student?
 
     fun save(student : Student) : Student
 
