@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.util.stream.Collectors
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
-
+import kotlin.streams.toList
 
 @ControllerAdvice
-public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
+class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
-    override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest):
+            ResponseEntity<Any> {
         val result = ex.bindingResult
 
         val apiErrors = result.fieldErrors.stream()
                 .map<Any> { fieldError: FieldError ->
                     ApiError("object: ${fieldError.objectName}, field: ${fieldError.field}, message: ${fieldError.defaultMessage}")
                 }
-                .collect(Collectors.toList())
+                .toList()
 
         return ResponseEntity
                 .badRequest()
@@ -35,11 +35,12 @@ public class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleJavaxConstraintViolationException(
-            ex: ConstraintViolationException): ResponseEntity<Any?>? {
+            ex: ConstraintViolationException): ResponseEntity<Any> {
         val apiErrors = ex.constraintViolations.stream()
                 .map { obj: ConstraintViolation<*> -> obj.message }
                 .map<Any> { ApiError(it) }
-                .collect(Collectors.toList())
+                .toList()
+
         return ResponseEntity
                 .badRequest()
                 .body(apiErrors)
