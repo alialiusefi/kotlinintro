@@ -6,11 +6,8 @@ import com.demo.kotlinintro.service.StudentService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
-
-// companion object for constants, and in general, controller is not the best place to store validation constants
-const val UUID_REGEX: String = "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
-const val INVALID_UUID_MSG: String = "Invalid UUID format"
 
 @RestController
 @RequestMapping("/students")
@@ -19,7 +16,7 @@ class StudentController(private val studentService: StudentService) {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllStudents(): List<StudentDTO> = studentService.getAllStudents().stream()
+    fun getAllStudents(): List<StudentDTO> = studentService.getAllStudents()
             .map { it.toStudentDTO() }
 
     @GetMapping("/{id}")
