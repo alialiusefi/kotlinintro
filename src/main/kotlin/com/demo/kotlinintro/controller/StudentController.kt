@@ -31,9 +31,7 @@ class StudentController(private val studentService: StudentService) {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun editStudent(@PathVariable @Valid id: UUID, @Valid @RequestBody studentDTO:
-    StudentDTO): StudentDTO =
-            studentService.editStudent(id, studentDTO)
-                    .toStudentDTO()
+    StudentDTO): StudentDTO = studentService.editStudent(id, studentDTO).toStudentDTO()  // conversion should be applied on one level
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
