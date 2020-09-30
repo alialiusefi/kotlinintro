@@ -1,5 +1,6 @@
 package com.demo.kotlinintro.controller
 
+import com.demo.kotlinintro.converter.toStudent
 import com.demo.kotlinintro.converter.toStudentDTO
 import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.service.StudentService
@@ -26,12 +27,12 @@ class StudentController(private val studentService: StudentService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // could already exist
-    fun addStudent(@Valid @RequestBody studentDTO: StudentDTO): StudentDTO = studentService.addStudent(studentDTO).toStudentDTO()
+    fun addStudent(@Valid @RequestBody studentDTO: StudentDTO): StudentDTO = studentService.addStudent(studentDTO.toStudent()).toStudentDTO()
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun editStudent(@PathVariable @Valid id: UUID, @Valid @RequestBody studentDTO:
-    StudentDTO): StudentDTO = studentService.editStudent(id, studentDTO).toStudentDTO()  // conversion should be applied on one level
+    StudentDTO): StudentDTO = studentService.editStudent(id, studentDTO.toStudent()).toStudentDTO()
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

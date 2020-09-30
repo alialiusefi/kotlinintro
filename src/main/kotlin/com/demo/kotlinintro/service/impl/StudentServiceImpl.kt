@@ -1,7 +1,5 @@
 package com.demo.kotlinintro.service.impl
 
-import com.demo.kotlinintro.converter.toStudent
-import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.exception.ResourceNotFoundException
 import com.demo.kotlinintro.repository.StudentRepository
@@ -17,9 +15,9 @@ class StudentServiceImpl(private val studentRepository: StudentRepository) : Stu
 
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
-    override fun addStudent(student: StudentDTO): Student = studentRepository.save(student.toStudent())
+    override fun addStudent(student: Student): Student = studentRepository.save(student)
 
-    override fun editStudent(uuid: UUID, givenStudent: StudentDTO): Student {
+    override fun editStudent(uuid: UUID, givenStudent: Student): Student {
         val oldStudent = getStudent(uuid)
         val newStudent = oldStudent.copy(
                 fullName = givenStudent.fullName,
