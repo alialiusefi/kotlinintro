@@ -7,10 +7,5 @@ data class ConstraintError(val fieldMessages : List<FieldMessage>,
                            val status : Int,
                            val path : String) {
 
-    class FieldMessage(val field: String, val message: String) {
-
-        override fun toString(): String {
-            return "field: $field, message: $message}"
-        }
-    }
+    class FieldMessage(val field: String, val message: String)
 }
