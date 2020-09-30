@@ -30,7 +30,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         val url = getPath(request)
 
-        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST, path = url)
+        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
 
         return ResponseEntity
                 .badRequest()
@@ -46,7 +46,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
                 .map { obj: ConstraintViolation<*> -> obj.message }
                 .toList()
 
-        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST, path = url)
+        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
 
         return ResponseEntity
                 .badRequest()
@@ -60,7 +60,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         val url: String = getPath(request)
 
-        val apiError = ApiError(messages = listOf(error), status = HttpStatus.BAD_REQUEST, path = url)
+        val apiError = ApiError(messages = listOf(error), status = HttpStatus.BAD_REQUEST.value(), path = url)
 
         return ResponseEntity(
                 apiError, HttpHeaders(), HttpStatus.BAD_REQUEST)
@@ -73,7 +73,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         val apiError = ApiError(
                 messages = listOf(requireNotNull(ex.message)),
-                status = HttpStatus.BAD_REQUEST,
+                status = HttpStatus.BAD_REQUEST.value(),
                 path = url)
 
         return ResponseEntity(
