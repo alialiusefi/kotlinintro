@@ -73,7 +73,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         val apiError = ApiError(
                 messages = listOf(requireNotNull(ex.message)),
-                status = HttpStatus.BAD_REQUEST.value(),
+                status = HttpStatus.NOT_FOUND.value(),
                 path = url)
 
         return ResponseEntity(
