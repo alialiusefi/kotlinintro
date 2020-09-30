@@ -8,58 +8,78 @@ import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
-import kotlin.streams.toList
+
 
 @ControllerAdvice
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest):
-            ResponseEntity<Any> {
+            ResponseEntity<Any>{
         val result = ex.bindingResult
 
-        val apiErrors = result.fieldErrors.stream()
-                .map<Any> { fieldError: FieldError ->
-                    ApiError("object: ${fieldError.objectName}, field: ${fieldError.field}, message: ${fieldError.defaultMessage}")
-                }
+        val messages = result.fieldErrors.map { fieldError: FieldError ->
+            "object: ${fieldError.objectName}, field: ${fieldError.field}, message: ${fieldError.defaultMessage}"
+        }
                 .toList()
+
+        val url = getPath(request)
+
+        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST, path = url)
 
         return ResponseEntity
                 .badRequest()
-                .body(apiErrors)
+                .body(body)
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleJavaxConstraintViolationException(
-            ex: ConstraintViolationException): ResponseEntity<Any> {
-        val apiErrors = ex.constraintViolations.stream()
+            ex: ConstraintViolationException, request: WebRequest): ResponseEntity<ApiError> {
+        val url = getPath(request)
+
+        val messages = ex.constraintViolations
                 .map { obj: ConstraintViolation<*> -> obj.message }
-                .map<Any> { ApiError(it) }
                 .toList()
+
+        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST, path = url)
 
         return ResponseEntity
                 .badRequest()
-                .body(apiErrors)
+                .body(body)
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleMethodArgumentTypeMismatch(
-            ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<Any> {
+            ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<ApiError> {
         val error = "${ex.name} should be of type ${ex.requiredType?.name}"
-        val apiError = ApiError(error)
+
+        val url: String = getPath(request)
+
+        val apiError = ApiError(messages = listOf(error), status = HttpStatus.BAD_REQUEST, path = url)
+
         return ResponseEntity(
                 apiError, HttpHeaders(), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(ResourceNotFoundException::class)
     fun handleResourceNotFoundException(
-            ex: ResourceNotFoundException, request: WebRequest): ResponseEntity<Any> {
-        val apiError = ApiError(requireNotNull(ex.message))
+            ex: ResourceNotFoundException, request: WebRequest): ResponseEntity<ApiError> {
+        val url = getPath(request)
+
+        val apiError = ApiError(
+                messages = listOf(requireNotNull(ex.message)),
+                status = HttpStatus.BAD_REQUEST,
+                path = url)
+
         return ResponseEntity(
                 apiError, HttpHeaders(), HttpStatus.NOT_FOUND)
     }
+
+    private fun getPath(webRequest: WebRequest) = (webRequest as ServletWebRequest).request.requestURI.toString()
+
 }
