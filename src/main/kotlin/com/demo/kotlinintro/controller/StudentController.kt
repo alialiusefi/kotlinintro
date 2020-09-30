@@ -26,7 +26,7 @@ class StudentController(private val studentService: StudentService) {
             StudentDTO = studentService.getStudent(id).toStudentDTO()
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // could already exist
+    @ResponseStatus(HttpStatus.CREATED)
     fun addStudent(@Valid @RequestBody studentDTO: StudentDTO): StudentDTO = studentService.addStudent(studentDTO.toStudent()).toStudentDTO()
 
     @PutMapping("/{id}")
