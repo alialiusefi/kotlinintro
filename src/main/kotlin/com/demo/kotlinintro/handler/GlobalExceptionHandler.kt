@@ -1,5 +1,6 @@
 package com.demo.kotlinintro.handler
 
+import com.demo.kotlinintro.exception.DuplicateResourceException
 import com.demo.kotlinintro.exception.ResourceNotFoundException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -39,12 +40,13 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     fun handleJavaxConstraintViolationException(
             ex: ConstraintViolationException, request: WebRequest): ResponseEntity<ApiError> {
         val url = getPath(request)
+        val status = HttpStatus.BAD_REQUEST
 
         val messages = ex.constraintViolations
                 .map { obj: ConstraintViolation<*> -> obj.message }
                 .toList()
 
-        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
+        val body = ApiError(messages = messages, status = status.value(), path = url)
 
         return ResponseEntity
                 .badRequest()
@@ -55,13 +57,13 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     fun handleMethodArgumentTypeMismatch(
             ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<ApiError> {
         val error = "${ex.name} should be of type ${ex.requiredType?.name}"
-
+        val status = HttpStatus.BAD_REQUEST
         val url: String = getPath(request)
 
-        val apiError = ApiError(messages = listOf(error), status = HttpStatus.BAD_REQUEST.value(), path = url)
+        val apiError = ApiError(messages = listOf(error), status = status.value(), path = url)
 
         return ResponseEntity(
-                apiError, HttpHeaders(), HttpStatus.BAD_REQUEST)
+                apiError, HttpHeaders(), status)
     }
 
     @ExceptionHandler(ResourceNotFoundException::class)
@@ -76,6 +78,21 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         return ResponseEntity(
                 apiError, HttpHeaders(), HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(DuplicateResourceException::class)
+    fun handleDuplicateResourceException(ex: DuplicateResourceException, request: WebRequest):
+            ResponseEntity<ApiError> {
+        val url = getPath(request)
+        val status = HttpStatus.CONFLICT
+
+        val apiError = ApiError(
+                messages = listOf(requireNotNull(ex.message)),
+                status = status.value(),
+                path = url)
+
+        return ResponseEntity(
+                apiError, HttpHeaders(), status)
     }
 
     private fun getPath(webRequest: WebRequest) = (webRequest as ServletWebRequest).request.requestURI.toString()

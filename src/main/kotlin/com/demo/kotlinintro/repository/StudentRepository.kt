@@ -12,4 +12,6 @@ interface StudentRepository {
     fun save(student : Student) : Student
 
     fun delete(student : Student) : DeleteResult
+
+    fun findByStudent(student: Student) : Student?
 }
