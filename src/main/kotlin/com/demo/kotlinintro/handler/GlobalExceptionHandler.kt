@@ -4,7 +4,6 @@ import com.demo.kotlinintro.exception.ResourceNotFoundException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -20,17 +19,16 @@ import javax.validation.ConstraintViolationException
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest):
-            ResponseEntity<Any>{
+            ResponseEntity<Any> {
         val result = ex.bindingResult
 
-        val messages = result.fieldErrors.map { fieldError: FieldError ->
-            "object: ${fieldError.objectName}, field: ${fieldError.field}, message: ${fieldError.defaultMessage}"
+        val messages = result.fieldErrors.map {
+            ConstraintError.FieldMessage(it.field, requireNotNull(it.defaultMessage))
         }
-                .toList()
 
         val url = getPath(request)
 
-        val body = ApiError(messages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
+        val body = ConstraintError(fieldMessages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
 
         return ResponseEntity
                 .badRequest()
