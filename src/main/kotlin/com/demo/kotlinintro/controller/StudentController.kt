@@ -3,6 +3,7 @@ package com.demo.kotlinintro.controller
 import com.demo.kotlinintro.converter.toStudent
 import com.demo.kotlinintro.converter.toStudentDTO
 import com.demo.kotlinintro.dto.StudentDTO
+import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.handler.ApiError
 import com.demo.kotlinintro.handler.ConstraintError
 import com.demo.kotlinintro.service.StudentService
@@ -12,8 +13,16 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 import javax.validation.Valid
 
 @RestController
@@ -35,8 +44,7 @@ class StudentController(private val studentService: StudentService) {
             ApiResponse(code = 404, message = "Student Not Found", response = ApiError::class),
             ApiResponse(code = 400, message = "Incorrect UUID", response = ApiError::class)
     )
-    fun getStudent(@ApiParam @PathVariable @Valid id: UUID):
-            StudentDTO = studentService.getStudent(id).toStudentDTO()
+    fun getStudent(@ApiParam @PathVariable @Valid id: UUID): StudentDTO = studentService.getStudent(id).toStudentDTO()
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,7 +65,11 @@ class StudentController(private val studentService: StudentService) {
             ApiResponse(code = 404, message = "Student Not Found", response = ApiError::class)
             )
     fun editStudent(@PathVariable @Valid id: UUID, @Valid @RequestBody studentDTO:
-    StudentDTO): StudentDTO = studentService.editStudent(id, studentDTO.toStudent()).toStudentDTO()
+    StudentDTO): StudentDTO {
+        val student = studentDTO.toStudent()
+        val updatedStudent : Student = studentService.editStudent(id, student)
+        return updatedStudent.toStudentDTO()
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete student")
