@@ -1,19 +1,18 @@
 package com.demo.kotlinintro.service
 
-import com.demo.kotlinintro.dto.StudentDTO
 import com.demo.kotlinintro.entity.Student
-import java.util.*
+import java.util.UUID
 
 interface StudentService {
 
-    fun getStudent(uuid : UUID) : Student
+    fun getStudent(uuid: UUID): Student
 
-    fun getAllStudents() : List<Student>
+    fun getAllStudents(): List<Student>
 
-    fun addStudent(student: StudentDTO) : Student
+    fun addStudent(student: Student): Student
 
-    fun editStudent(uuid : UUID, givenStudent: StudentDTO) : Student
+    fun editStudent(uuid: UUID, givenStudent: Student): Student
 
-    fun deleteStudent(uuid : UUID)
+    fun deleteStudent(uuid: UUID)
 
 }

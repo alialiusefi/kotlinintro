@@ -8,7 +8,6 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.Past
 import javax.validation.constraints.Positive
 
-
 data class StudentDTO(@JsonProperty("id", access = JsonProperty.Access.READ_ONLY) val id: String?,
                       @field:Length(min = 3, max = 50) val fullName: String,
                       @field:Positive
