@@ -15,13 +15,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 
-
 @ControllerAdvice
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatus, request: WebRequest):
             ResponseEntity<Any> {
         val result = ex.bindingResult
+        val httpStatus = HttpStatus.BAD_REQUEST
 
         val messages = result.fieldErrors.map {
             ConstraintError.FieldMessage(it.field, requireNotNull(it.defaultMessage))
@@ -29,7 +29,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         val url = getPath(request)
 
-        val body = ConstraintError(fieldMessages = messages, status = HttpStatus.BAD_REQUEST.value(), path = url)
+        val body = ConstraintError(fieldMessages = messages, status = httpStatus.value(), path = url)
 
         return ResponseEntity
                 .badRequest()

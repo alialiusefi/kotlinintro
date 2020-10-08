@@ -1,5 +1,6 @@
 package com.demo.kotlinintro.repository.impl
 
+import com.demo.kotlinintro.constant.RepositoryConstants
 import com.demo.kotlinintro.entity.Student
 import com.demo.kotlinintro.repository.StudentRepository
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -21,11 +22,11 @@ class StudentRepositoryImpl(private val mongoTemplate: MongoTemplate) : StudentR
     override fun delete(student: Student) = mongoTemplate.remove(student)
 
     override fun findByStudent(student: Student): Student? {
-        val criteria = Criteria.where("fullName").isEqualTo(student.fullName)
-                .and("email").isEqualTo(student.email)
-                .and("dateOfBirth").isEqualTo(student.dateOfBirth)
-                .and("active").isEqualTo(student.active)
-                .and("yearEnrolled").isEqualTo(student.yearEnrolled)
+        val criteria = Criteria.where(RepositoryConstants.FULLNAME).isEqualTo(student.fullName)
+                .and(RepositoryConstants.EMAIL).isEqualTo(student.email)
+                .and(RepositoryConstants.DATEOFBIRTH).isEqualTo(student.dateOfBirth)
+                .and(RepositoryConstants.ACTIVE).isEqualTo(student.active)
+                .and(RepositoryConstants.YEARENROLLED).isEqualTo(student.yearEnrolled)
 
         val query = Query.query(criteria)
 

@@ -7,5 +7,5 @@ data class ConstraintError(val fieldMessages : List<FieldMessage>,
                            val status : Int,
                            val path : String) {
 
-    class FieldMessage(val field: String, val message: String)
+    data class FieldMessage(val field: String, val message: String)
 }

@@ -54,7 +54,11 @@ class StudentController(private val studentService: StudentService) {
             ApiResponse(code = 400, message = "Invalid body", response = ConstraintError::class),
             ApiResponse(code = 409, message = "Duplicate student", response = ApiError::class)
     )
-    fun addStudent(@Valid @RequestBody studentDTO: StudentDTO): StudentDTO = studentService.addStudent(studentDTO.toStudent()).toStudentDTO()
+
+    fun addStudent(@Valid @RequestBody studentDTO: StudentDTO): StudentDTO {
+        val student = studentDTO.toStudent()
+        return studentService.addStudent(student).toStudentDTO()
+    }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -63,11 +67,11 @@ class StudentController(private val studentService: StudentService) {
             ApiResponse(code = 200, message = "Edited"),
             ApiResponse(code = 400, message = "Invalid body", response = ConstraintError::class),
             ApiResponse(code = 404, message = "Student Not Found", response = ApiError::class)
-            )
+    )
     fun editStudent(@PathVariable @Valid id: UUID, @Valid @RequestBody studentDTO:
     StudentDTO): StudentDTO {
         val student = studentDTO.toStudent()
-        val updatedStudent : Student = studentService.editStudent(id, student)
+        val updatedStudent: Student = studentService.editStudent(id, student)
         return updatedStudent.toStudentDTO()
     }
 

@@ -6,7 +6,7 @@ import com.demo.kotlinintro.exception.ResourceNotFoundException
 import com.demo.kotlinintro.repository.StudentRepository
 import com.demo.kotlinintro.service.StudentService
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class StudentServiceImpl(private val studentRepository: StudentRepository) : StudentService {

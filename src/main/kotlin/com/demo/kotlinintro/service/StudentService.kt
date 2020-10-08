@@ -1,7 +1,7 @@
 package com.demo.kotlinintro.service
 
 import com.demo.kotlinintro.entity.Student
-import java.util.*
+import java.util.UUID
 
 interface StudentService {
 
