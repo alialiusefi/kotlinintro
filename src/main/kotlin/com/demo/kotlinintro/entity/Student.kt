@@ -11,5 +11,5 @@ data class Student(@MongoId val id: String = UUID.randomUUID().toString(),
                    val fullName: String,
                    val yearEnrolled: Int,
                    val dateOfBirth: LocalDate,
-                   @field:Indexed var email: String,
+                   @field:Indexed(unique = true, name = "student_email_idx") var email: String,
                    var active: Boolean = false)

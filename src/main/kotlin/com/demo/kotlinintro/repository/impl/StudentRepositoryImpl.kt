@@ -21,15 +21,9 @@ class StudentRepositoryImpl(private val mongoTemplate: MongoTemplate) : StudentR
 
     override fun delete(student: Student) = mongoTemplate.remove(student)
 
-    override fun findByStudent(student: Student): Student? {
-        val criteria = Criteria.where(RepositoryConstants.FULLNAME).isEqualTo(student.fullName)
-                .and(RepositoryConstants.EMAIL).isEqualTo(student.email)
-                .and(RepositoryConstants.DATEOFBIRTH).isEqualTo(student.dateOfBirth)
-                .and(RepositoryConstants.ACTIVE).isEqualTo(student.active)
-                .and(RepositoryConstants.YEARENROLLED).isEqualTo(student.yearEnrolled)
-
+    override fun findByEmail(email: String): Student? {
+        val criteria = Criteria.where(RepositoryConstants.EMAIL).isEqualTo(email)
         val query = Query.query(criteria)
-
         return mongoTemplate.findOne(query, Student::class.java)
     }
 

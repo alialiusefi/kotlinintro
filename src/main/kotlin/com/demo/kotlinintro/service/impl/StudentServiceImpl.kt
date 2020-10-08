@@ -17,10 +17,9 @@ class StudentServiceImpl(private val studentRepository: StudentRepository) : Stu
     override fun getAllStudents(): List<Student> = studentRepository.findAll()
 
     override fun addStudent(student: Student): Student {
-        if (isExistsStudent(student)) {
-            throw DuplicateResourceException("Student with these fields already exists")
-        }
-        return studentRepository.save(student)
+        studentRepository.findByEmail(student.email) ?: return studentRepository.save(student)
+        throw DuplicateResourceException("Student with this email " +
+                "already exists")
     }
 
     override fun editStudent(uuid: UUID, givenStudent: Student): Student {
@@ -39,7 +38,4 @@ class StudentServiceImpl(private val studentRepository: StudentRepository) : Stu
         val student = getStudent(uuid)
         studentRepository.delete(student)
     }
-
-    override fun isExistsStudent(student: Student): Boolean = studentRepository.findByStudent(student) != null
-
 }

@@ -15,5 +15,4 @@ interface StudentService {
 
     fun deleteStudent(uuid: UUID)
 
-    fun isExistsStudent(student: Student) : Boolean
 }

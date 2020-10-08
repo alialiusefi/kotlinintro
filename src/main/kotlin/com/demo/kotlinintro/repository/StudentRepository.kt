@@ -13,5 +13,5 @@ interface StudentRepository {
 
     fun delete(student : Student) : DeleteResult
 
-    fun findByStudent(student: Student) : Student?
+    fun findByEmail(email: String) : Student?
 }
