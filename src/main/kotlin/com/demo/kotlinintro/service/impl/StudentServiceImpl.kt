@@ -18,8 +18,7 @@ class StudentServiceImpl(private val studentRepository: StudentRepository) : Stu
 
     override fun addStudent(student: Student): Student {
         studentRepository.findByEmail(student.email) ?: return studentRepository.save(student)
-        throw DuplicateResourceException("Student with this email " +
-                "already exists")
+        throw DuplicateResourceException("Student with this email already exists")
     }
 
     override fun editStudent(uuid: UUID, givenStudent: Student): Student {
